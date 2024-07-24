@@ -5,26 +5,22 @@ import {Button, Container, Input, Table} from 'reactstrap';
 export default function Students() {
   // State, initial field
   const [data, setData] = useState([]);
-  const [message, setMessage] = useState("");
-  const [text, setText] = useState("")
-  const [textEdit, setTextEdit] = useState("")
-  const [isEdit, setIsEdit] = useState({id:"", flag: false})
+  const [message, setMessage] = useState('');
+  const [text, setText] = useState('');
+  const [textEdit, setTextEdit] = useState('');
+  const [isEdit, setIsEdit] = useState({id: '', flag: false});
   const [checked, setChecked] = useState({
-    id:"",
-    flag: false
-  })
+    id: '',
+    flag: false,
+  });
 
   const inititalizeCheked = () => {
-      const filterData = data.filter(item => item.checked === false);
+    const filterData = data.filter((item) => item.checked === false);
 
-      return filterData.length !==0
-  }
+    return filterData.length !== 0;
+  };
 
-  const reChecked = (id, flag) => {
-
-  }
-
-
+  const reChecked = (id, flag) => {};
 
   const url = 'https://66a07b267053166bcabb898e.mockapi.io/student';
 
@@ -76,11 +72,11 @@ export default function Students() {
     })
       .then((res) => {
         setMessage('Delete successful');
-        setData(data.filter(item => item.id !== id))
+        setData(data.filter((item) => item.id !== id));
       })
       .catch((error) => {
         console.log(error);
-      })
+      });
   };
 
   // const addNewStudent = () => {
@@ -108,12 +104,11 @@ export default function Students() {
     })
       .then((res) => {
         setMessage('Add Successful');
-        setData([...data,{id: res.data.id, name: txt}])
+        setData([...data, {id: res.data.id, name: txt}]);
       })
       .catch((error) => {
         console.log(error);
-      })
-      
+      });
   };
 
   // const updateStudent = (id) => {
@@ -132,55 +127,49 @@ export default function Students() {
   // }
 
   // axios put khai báo tuờng minh
-  const updateStudent = (id,txt) => {
+  const updateStudent = (id, txt) => {
     axios({
       method: 'put',
-      url: url + '/' +id,
+      url: url + '/' + id,
       data: {
         name: txt,
       },
     })
       .then((res) => {
-        setMessage('Update successful')
-        setData(data.map(item => item.id === id ?{...item,name: txt}:item))
+        setMessage('Update successful');
+        setData(
+          data.map((item) => (item.id === id ? {...item, name: txt} : item))
+        );
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-
-
-
   // Render
   return (
     <div>
       <Container>
-        {
-          message && <p>{message}</p>
-        }
+        {message && <p>{message}</p>}
         <h1>Student List</h1>
         <Input
-         placeholder="Nhập tìm kiếm" 
-          className='my-5'
+          placeholder="Nhập tìm kiếm"
+          className="my-5"
           value={text}
-
           onChange={(e) => setText(e.target.value)}
-
           onKeyDown={(e) => {
-            if(e.key === "Enter") {
-              addNewStudent(text)
-              setText("")
+            if (e.key === 'Enter') {
+              addNewStudent(text);
+              setText('');
             }
           }}
-         
-         />
+        />
 
         <Table>
           <thead>
             <tr>
               <th>
-                <Input type='checkbox'/>
+                <Input type="checkbox" />
               </th>
               <th>#id</th>
               <th>Username</th>
@@ -192,34 +181,38 @@ export default function Students() {
               data.map((item, index) => (
                 <tr key={index}>
                   <td>
-                    <Input type='checkbox'/>
+                    <Input type="checkbox" />
                   </td>
                   <td>{item.id}</td>
                   <td>
-                    {
-                        isEdit.id === item.id && isEdit.flag === true?<Input
-                          value={textEdit}
-                          onChange={(e) => setTextEdit(e.target.value)}
-                          onKeyDown={(e)=> {
-                            if(e.key === "Enter") {
-                              updateStudent(item.id, textEdit)
-                              setTextEdit("")
-                              setIsEdit({
-                                id: "",
-                                flag: false
-                              })
-                            }
-                          }}
-
-                        />:
-                        <p onDoubleClick={() => {
+                    {isEdit.id === item.id && isEdit.flag === true ? (
+                      <Input
+                        value={textEdit}
+                        onChange={(e) => setTextEdit(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            updateStudent(item.id, textEdit);
+                            setTextEdit('');
+                            setIsEdit({
+                              id: '',
+                              flag: false,
+                            });
+                          }
+                        }}
+                      />
+                    ) : (
+                      <p
+                        onDoubleClick={() => {
                           setIsEdit({
                             id: item.id,
-                            flag: true
-                          })
-                          setTextEdit(item.name)
-                        }}>{item.name}</p>
-                    }
+                            flag: true,
+                          });
+                          setTextEdit(item.name);
+                        }}
+                      >
+                        {item.name}
+                      </p>
+                    )}
                   </td>
                   <td>
                     <Button
@@ -230,7 +223,20 @@ export default function Students() {
                     </Button>
                     <Button
                       onClick={() => {
-                        
+                        if (isEdit.flag !== true) {
+                          setIsEdit({
+                            id: item.id,
+                            flag: true,
+                          });
+                          setTextEdit(item.name);
+                        }
+                        else {
+                          updateStudent(item.id, textEdit);
+                          setIsEdit({
+                            id: '',
+                            flag: false
+                          })
+                        }
                       }}
                       className="btn btn-success"
                     >
